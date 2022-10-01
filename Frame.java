@@ -44,7 +44,9 @@ public class Frame extends JFrame {
 			public void run() {
 				try {
 					Frame frame = new Frame();
+					frame.setBackground(Color.red);
 					frame.setVisible(true);
+					
 					// Container c = frame.getContentPane();
 					// c.setBackground(Color.red);
 				} catch (Exception e) {
@@ -67,7 +69,13 @@ public class Frame extends JFrame {
 		JPanel bitPanel = new JPanel();
 		JPanel labelBitPanel = new JPanel();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		contentPane.setBackground(new java.awt.Color(204, 166, 166));
+		contentPane.setBackground(new Color(0,139,139));
+		processingPanel.setBackground(new Color(0,139,139));
+		commandPanel.setBackground(new Color(0,139,139));
+		bitPanel.setBackground(new Color(0,139,139));
+		labelBitPanel.setBackground(new Color(0,139,139));
+
+	// jframe.setBackground(new java.awt.Color(204, 166, 166));
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
