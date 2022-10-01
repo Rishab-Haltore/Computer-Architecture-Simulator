@@ -23,6 +23,7 @@ public class Frame extends JFrame {
 	private JTextField MBRBitField;
 	private JTextField MFRBitField;
 	private JTextField CCBitField;
+	private JTextArea descBitField;
 	private JButton IPLButton;
 
 
@@ -44,6 +45,8 @@ public class Frame extends JFrame {
 				try {
 					Frame frame = new Frame();
 					frame.setVisible(true);
+					// Container c = frame.getContentPane();
+					// c.setBackground(Color.red);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,6 +67,7 @@ public class Frame extends JFrame {
 		JPanel bitPanel = new JPanel();
 		JPanel labelBitPanel = new JPanel();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		contentPane.setBackground(new java.awt.Color(204, 166, 166));
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
@@ -122,6 +126,8 @@ public class Frame extends JFrame {
 		this.addMFR(processingPanel);
 		this.addIPL(processingPanel);
 		this.addCC(processingPanel);
+		this.addDescription(processingPanel);
+		this.addMachineCode(processingPanel);
 		this.addRun(processingPanel);
 		this.addStoreAndLoad(commandPanel);
 		this.addSwitches(bitPanel);
@@ -234,6 +240,43 @@ public class Frame extends JFrame {
 		
 	}
 
+	//description and text box added
+
+	private void addDescription(JPanel panel){
+
+		JLabel descJLabel = new JLabel("Description");
+		descBitField = new JTextArea(20,20);
+		descBitField.setEditable(true);
+		descJLabel.setBounds( 512, 300, 100, textFieldHeight);
+		this.descBitField.setBounds(600, 300, 200,textFieldHeight);
+		panel.add(descJLabel);
+		panel.add(descBitField);
+
+
+
+		
+
+
+	}
+
+
+	//machine code to dosplay console
+
+	private void addMachineCode(JPanel panel){
+
+		JLabel machineCodeJLabel = new JLabel("Machine Code");
+		machineCodeJLabel.setBounds( 1050, 230, 100, textFieldHeight);
+
+		JTextArea textArea = new JTextArea();
+		JScrollPane scroll = new JScrollPane (textArea, 
+		JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);   /*horizontal and vertical scroll */
+
+		scroll.setBounds(950,270,300,120);
+		panel.add(machineCodeJLabel);
+		panel.add(scroll);
+
+	}
+
 	private void addGeneralPurposeRegisters(JPanel panel) {
 
 		/* 
@@ -255,7 +298,7 @@ public class Frame extends JFrame {
 
 		this.GPR0BitField = new JTextField(16);
 		this.GPR0BitField.setName("gpr0");
-		this.GPR0BitField.setEditable(false);
+		this.GPR0BitField.setEditable(true);
 
 		this.GPR1BitField = new JTextField(16);
 		this.GPR1BitField.setName("gpr1");
