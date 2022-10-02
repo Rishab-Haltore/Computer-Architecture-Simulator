@@ -1,3 +1,6 @@
+import com.sun.jdi.Value;
+import jdk.jshell.execution.Util;
+
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -7,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
+import java.lang.Thread;
 
 public class Frame extends JFrame {
 
@@ -23,17 +27,22 @@ public class Frame extends JFrame {
 	private JTextField MBRBitField;
 	private JTextField MFRBitField;
 	private JTextField CCBitField;
-	private JTextArea descBitField;
+	private JTextArea MachineCodeBitField;
+	private JTextArea DescBitField;
 	private JButton IPLButton;
 
 
 	private String switchValue;
 	private JToggleButton[] switches;
-	private final Memory memory;
 
 	private final int screenInc = 1280/10;
 	private final int textFieldWidth = 150;
 	private final int textFieldHeight = 23;
+
+
+	static boolean run = true;
+	static public String[] InstructionArray = new String[50];
+	static int PC_pointer;
 
 
 	/**
@@ -44,9 +53,7 @@ public class Frame extends JFrame {
 			public void run() {
 				try {
 					Frame frame = new Frame();
-					frame.setBackground(Color.red);
 					frame.setVisible(true);
-					
 					// Container c = frame.getContentPane();
 					// c.setBackground(Color.red);
 				} catch (Exception e) {
@@ -124,7 +131,7 @@ public class Frame extends JFrame {
 		/*
 		 * Add to JFrame
 		 */
-		this.memory = new Memory();
+//		this.memory = new Memory();
 		this.addGeneralPurposeRegisters(processingPanel);
 		this.addIndexRegisters(processingPanel);
 		this.addIR(processingPanel);
@@ -182,17 +189,18 @@ public class Frame extends JFrame {
 		RUN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//need to input instruction
-                boolean run = true;
+                run = true;
 			    while(run) {
                     singleStep();
-                    if(Integer.parseInt(PCBitField.getText(), 2) >= memory.memory.length) {
+                    if ((Integer.parseInt(PCBitField.getText(), 2) >= Memory.ProcessorMemory.length))
+					{
                         PCBitField.setText("0".repeat(PCBitField.getColumns()));
                         run = false;
                         refresh();
                     }
                     
                     try {
-                        TimeUnit.SECONDS.sleep(1);
+                        TimeUnit.SECONDS.sleep(2);
                     } catch (InterruptedException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -201,6 +209,8 @@ public class Frame extends JFrame {
 				
 			}
 		});
+
+
 
 		/*
 		 * Add to JFrame
@@ -249,41 +259,38 @@ public class Frame extends JFrame {
 	}
 
 	//description and text box added
-
-	private void addDescription(JPanel panel){
-
-		JLabel descJLabel = new JLabel("Description");
-		descBitField = new JTextArea(20,20);
-		descBitField.setEditable(true);
-		descJLabel.setBounds( 512, 300, 100, textFieldHeight);
-		this.descBitField.setBounds(600, 300, 200,textFieldHeight);
-		panel.add(descJLabel);
-		panel.add(descBitField);
-
-
-
-		
-
-
-	}
-
-
-	//machine code to dosplay console
-
 	private void addMachineCode(JPanel panel){
 
-		JLabel machineCodeJLabel = new JLabel("Machine Code");
-		machineCodeJLabel.setBounds( 1050, 230, 100, textFieldHeight);
+		JLabel MachineCodeJLabel = new JLabel("Machine Code");
+		JLabel MachineCodeJLabel2 = new JLabel("Next Instruction");
+		MachineCodeBitField = new JTextArea(20,20);
+		MachineCodeBitField.setEditable(false);
+		MachineCodeJLabel.setBounds( 512, 300, 100, textFieldHeight);
+		MachineCodeJLabel2.setBounds( 655, 275, 100, textFieldHeight);
+		this.MachineCodeBitField.setBounds(600, 300, 200,textFieldHeight);
+		panel.add(MachineCodeJLabel);
+		panel.add(MachineCodeJLabel2);
+		panel.add(MachineCodeBitField);
+	}
 
-		JTextArea textArea = new JTextArea();
-		JScrollPane scroll = new JScrollPane (textArea, 
+
+	//machine code to display console
+	private void addDescription(JPanel panel){
+
+		JLabel DescriptionJLabel = new JLabel("Description");
+		DescriptionJLabel.setBounds( 956, 230, 100, textFieldHeight);
+
+		DescBitField = new JTextArea();
+		JScrollPane scroll = new JScrollPane (DescBitField,
 		JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);   /*horizontal and vertical scroll */
 
-		scroll.setBounds(950,270,300,120);
-		panel.add(machineCodeJLabel);
+		scroll.setBounds(856,260,300,120);
+		panel.add(DescriptionJLabel);
 		panel.add(scroll);
+		panel.add(DescBitField);
 
 	}
+
 
 	private void addGeneralPurposeRegisters(JPanel panel) {
 
@@ -306,7 +313,7 @@ public class Frame extends JFrame {
 
 		this.GPR0BitField = new JTextField(16);
 		this.GPR0BitField.setName("gpr0");
-		this.GPR0BitField.setEditable(true);
+		this.GPR0BitField.setEditable(false);
 
 		this.GPR1BitField = new JTextField(16);
 		this.GPR1BitField.setName("gpr1");
@@ -536,6 +543,7 @@ public class Frame extends JFrame {
 
 		PCButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				GPRController(Frame.this.PCBitField);
 			}
 		});
 
@@ -697,27 +705,37 @@ public class Frame extends JFrame {
 		 */
 		storeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int Value=Integer.parseInt(MBRBitField.getText(),2);
-				int Index=Integer.parseInt(MARBitField.getText(),2);
-	            memory.insertX(Value, Index);
+				String Register_Val = switchValue.substring(6, 8);
+				int Value;
+
+				switch(Register_Val){
+					case "00" : Value = Integer.parseInt(GPR0BitField.getText(),2);
+					case "01" : Value = Integer.parseInt(GPR1BitField.getText(),2);
+					case "10" : Value = Integer.parseInt(GPR2BitField.getText(),2);
+					case "11" : Value = Integer.parseInt(GPR3BitField.getText(),2);
+					default : Value = 0;
+				}
+				int Index=Integer.parseInt(PCBitField.getText(),2);
+	            Memory.store_to_memory(Index, Value);
+
+				MARBitField.setText(PCBitField.getText());
+				MBRBitField.setText(Memory.get_from_memory_string(Index));
 
 			}
 		});
 
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int index_marmemory=Integer.parseInt(MARBitField.getText(),2);
-				System.out.println(index_marmemory);
-				
-				
-				 int n5 = memory.getValue(index_marmemory);
-		            String string = Integer.toBinaryString(n5);
-		            int n6 = MBRBitField.getText().length() - string.length();
-		            String string2 = "0".repeat(n6) + string;
-		            MBRBitField.setText(string2);
+				String Register_Val = switchValue.substring(6, 8);
+				MARBitField.setText(PCBitField.getText());
+				MBRBitField.setText(Memory.get_from_memory_string(Integer.parseInt(PCBitField.getText(),2)));
 
-
-				memory.getValue(index_marmemory);
+				switch(Register_Val) {
+					case "00" : GPR0BitField.setText(MBRBitField.getText());
+					case "01" : GPR1BitField.setText(MBRBitField.getText());
+					case "10" : GPR2BitField.setText(MBRBitField.getText());
+					case "11" : GPR3BitField.setText(MBRBitField.getText());
+				}
 			}
 		});
 
@@ -744,40 +762,75 @@ public class Frame extends JFrame {
 	}
 	
 	private void singleStep() {
-        MARBitField.setText(PCBitField.getText());
-        int data = memory.getValue(Integer.parseInt(PCBitField.getText(), 2));
-        String binString = Integer.toBinaryString(data);
-        binString = binString.length() == MBRBitField.getColumns() ? binString : "0".repeat(MBRBitField.getColumns()-binString.length()) + binString;
-        MBRBitField.setText(binString);
-        IRBitField.setText(MBRBitField.getText());
-        CPU.instruction(IRBitField.getText());
-        PCBitField.setText(Integer.toBinaryString(Integer.parseInt(PCBitField.getText(), 2)+1));
+		Registers.update_registers("MAR", Registers.get_register_value_int("PC"));
+
+		Registers.update_registers("MBR", Memory.get_from_memory_int(Registers.get_register_value_int("PC")));
+
+		Registers.update_registers("idx", Registers.get_register_value_int("MBR"));
+
+		Utils.execute(Registers.get_register_value_string("idx"));
+
+		Registers.update_registers("PC", Registers.get_register_value_int("PC") + 1);
+
+		Utils.execute(Registers.get_register_value_string("idx"));
+
+		try {
+			MachineCodeBitField.setText(InstructionArray[Registers.get_register_value_int("PC") - PC_pointer]);
+		}
+		catch (Exception e) {
+			MachineCodeBitField.setText(" ");
+		}
+
         refresh();
     }
 
+
+
 	private void refresh() {
         SwingUtilities.updateComponentTreeUI(this);
-        this.invalidate();
-        this.validate();
-        this.repaint();
+
+		this.GPR0BitField.setText(Registers.R0);
+		this.GPR1BitField.setText(Registers.R1);
+		this.GPR2BitField.setText(Registers.R2);
+		this.GPR3BitField.setText(Registers.R3);
+		this.IX1BitField.setText(Registers.X1);
+		this.IX2BitField.setText(Registers.X2);
+		this.IX3BitField.setText(Registers.X3);
+		this.PCBitField.setText(Registers.PC);
+		this.MARBitField.setText(Registers.MAR);
+		this.MBRBitField.setText(Registers.MBR);
+		this.IRBitField.setText(Registers.idx);
+		this.MFRBitField.setText(Registers.MFR);
+		this.switchValue = "0".repeat(16);
+		for (JToggleButton jToggleButton : this.switches) {
+			jToggleButton.setSelected(false);
+		}
+
+		this.invalidate();
+		this.validate();
+		this.repaint();
+
     }
 
 	private void resetMachineState() {
 		/*
 		 * Resets machine
 		 */
-		this.GPR0BitField.setText("0".repeat(16));
-		this.GPR1BitField.setText("0".repeat(16));
-		this.GPR2BitField.setText("0".repeat(16));
-		this.GPR3BitField.setText("0".repeat(16));
-		this.IX1BitField.setText("0".repeat(16));
-		this.IX2BitField.setText("0".repeat(16));
-		this.IX3BitField.setText("0".repeat(16));
-		this.PCBitField.setText("0".repeat(12));
-		this.MARBitField.setText("0".repeat(12));
-		this.MBRBitField.setText("0".repeat(16));
-		this.IRBitField.setText("0".repeat(16));
-		this.MFRBitField.setText("0".repeat(4));
+		Registers.create_reset_registers();
+		Memory.reset_memory();
+
+		this.GPR0BitField.setText(Registers.R0);
+		this.GPR1BitField.setText(Registers.R1);
+		this.GPR2BitField.setText(Registers.R2);
+		this.GPR3BitField.setText(Registers.R3);
+		this.IX1BitField.setText(Registers.X1);
+		this.IX2BitField.setText(Registers.X2);
+		this.IX3BitField.setText(Registers.X3);
+		this.PCBitField.setText(Registers.PC);
+		this.MARBitField.setText(Registers.MAR);
+		this.MBRBitField.setText(Registers.MBR);
+		this.IRBitField.setText(Registers.idx);
+		this.MFRBitField.setText(Registers.MFR);
 		this.switchValue = "0".repeat(16);
 		for (JToggleButton jToggleButton : this.switches) {
 			jToggleButton.setSelected(false);
@@ -813,21 +866,57 @@ public class Frame extends JFrame {
 	}
 
     private void loadBootProgram() {
+
+		// Load Random Values to Memory for Testing
 		try {
 			InputStream instream = getClass().getResourceAsStream("boot.txt");
 			if (instream == null) {
-                System.out.println("Unable to get File boot.txt");
-                return;
+				System.out.println("Unable to get File boot.txt");
+				return;
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader(instream));
 			String line;
 
-			while ( (line = br.readLine()) != null) {
-				String[] instr = line.split("\\s+");
-				int index = Integer.parseInt(instr[0],16) + 8;
-				int new_value = Integer.parseInt(instr[1],16);
-				System.out.println(new_value + " inserted into memory location " + index);
-				memory.insertX(new_value, index);
+			int mem_loc = 0;
+
+			while ((line = br.readLine()) != null) {
+				int new_value = Integer.parseInt(line);
+				Memory.store_to_memory(mem_loc, new_value);
+//				DescBitField.setText("Storing " + new_value + " in " + index);
+				System.out.println(new_value + " inserted into memory location " + mem_loc);
+				mem_loc = mem_loc+1;
+				refresh();
+			}
+		} catch (Exception e) {
+			System.out.println("Unable to load boot program :: " + e.getMessage());
+		}
+
+
+		// Load Program from address 110
+		try {
+			InputStream instream = getClass().getResourceAsStream("Test.txt");
+			if (instream == null) {
+				System.out.println("Unable to get File boot.txt");
+				return;
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader(instream));
+			String line;
+
+			int i = 0;
+			PC_pointer = 110;
+			Registers.update_registers("PC", 110);
+
+			while ((line = br.readLine()) != null) {
+				InstructionArray[i] = line;
+				String Opcode_string = Utils.generate_opcode(line);
+				Memory.store_to_memory(PC_pointer + i, Integer.parseInt(Opcode_string, 2));
+				i = i+1;
+				MachineCodeBitField.setText(InstructionArray[Registers.get_register_value_int("PC") - PC_pointer]);
+//				System.out.println(line);
+//				System.out.println(Integer.parseInt(Opcode_string, 2));
+//				System.out.println(Opcode_string);
+
+				refresh();
 			}
 		} catch (Exception e) {
 			System.out.println("Unable to load boot program :: " + e.getMessage());
