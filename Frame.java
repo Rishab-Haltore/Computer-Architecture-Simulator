@@ -76,11 +76,11 @@ public class Frame extends JFrame {
 		JPanel bitPanel = new JPanel();
 		JPanel labelBitPanel = new JPanel();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		contentPane.setBackground(new Color(0,139,139));
-		processingPanel.setBackground(new Color(0,139,139));
-		commandPanel.setBackground(new Color(0,139,139));
-		bitPanel.setBackground(new Color(0,139,139));
-		labelBitPanel.setBackground(new Color(0,139,139));
+		// contentPane.setBackground(new Color(0,139,139));
+		// processingPanel.setBackground(new Color(0,139,139));
+		// commandPanel.setBackground(new Color(0,139,139));
+		// bitPanel.setBackground(new Color(0,139,139));
+		// labelBitPanel.setBackground(new Color(0,139,139));
 
 	// jframe.setBackground(new java.awt.Color(204, 166, 166));
 		gl_contentPane.setHorizontalGroup(
