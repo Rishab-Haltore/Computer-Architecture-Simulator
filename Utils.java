@@ -22,7 +22,10 @@ public class Utils {
         operation = instruction.substring(0, 3);
         instruction = instruction.substring(3);
 
+
+
         I = instruction.substring(instruction.length() - 4);
+
 
         if (I.equals("[,I]"))
         {
@@ -33,6 +36,7 @@ public class Utils {
         {
             I = "0";
         }
+
 
         String[] TempArray = instruction.split(",");
 
@@ -45,27 +49,27 @@ public class Utils {
 
         switch (operation)
         {
-            case "LDR" : operation_bin = "000001";
-            case "STR" : operation_bin = "000010";
-            case "LDA" : operation_bin = "000011";
-            case "LDX" : operation_bin = "101001";
-            case "STX" : operation_bin = "101010";
-        }
+            case "LDR" : operation_bin = "000001"; break;
+            case "STR" : operation_bin = "000010"; break;
+            case "LDA" : operation_bin = "000011"; break;
+            case "LDX" : operation_bin = "101001"; break;
+            case "STX" : operation_bin = "101010"; break;
+        };
 
         switch (Reg)
         {
-            case "R0" : Reg_bin = "00";
-            case "R1" : Reg_bin = "01";
-            case "R2" : Reg_bin = "10";
-            case "R3" : Reg_bin = "11";
+            case "R0" : Reg_bin = "00"; break;
+            case "R1" : Reg_bin = "01"; break;
+            case "R2" : Reg_bin = "10"; break;
+            case "R3" : Reg_bin = "11"; break;
         }
 
         switch (X)
         {
-            case "X1" : X_bin = "01";
-            case "X2" : X_bin = "10";
-            case "X3" : X_bin = "11";
-            default : X_bin = "00";
+            case "X1" : X_bin = "01"; break;
+            case "X2" : X_bin = "10"; break;
+            case "X3" : X_bin = "11"; break;
+            default : X_bin = "00"; break;
         }
 
         I_bin = I;
@@ -75,6 +79,8 @@ public class Utils {
         Address_bin = String.format("%5s", Integer.toBinaryString(Address_int)).replace(' ', '0');
 
         opcode = operation_bin + Reg_bin + X_bin + I_bin + Address_bin;
+
+//        System.out.println(opcode);
 
         return opcode;
     }
@@ -91,10 +97,10 @@ public class Utils {
 
         switch(operation)
         {
-            case "000000" :ALU.HLT();
-            case "000001" : ALU.LDR(Register, Index_Reg, I, Address);
-            case "000010" : ALU.STR(Register, Index_Reg, I, Address);
-            case "000011" : ALU.LDA(Register, Index_Reg, I, Address);
+            case "000000" :ALU.HLT(); break;
+            case "000001" : ALU.LDR(Register, Index_Reg, I, Address); break;
+            case "000010" : ALU.STR(Register, Index_Reg, I, Address); break;
+            case "000011" : ALU.LDA(Register, Index_Reg, I, Address); break;
 
         }
 

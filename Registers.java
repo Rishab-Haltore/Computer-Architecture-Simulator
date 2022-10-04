@@ -43,23 +43,23 @@ public class Registers {
     }
 
 
-     public static void update_registers(String reg_name, int val)
+    public static void update_registers(String reg_name, int val)
     {
         switch (reg_name)
         {
-            case "R0" : R0 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "R1" : R1 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "R2" : R2 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "R3" : R3 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "idx" : idx = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "MBR" : MBR = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "MAR" : MAR = String.format("%12s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "MFR" : MFR = String.format("%4s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "PC" : PC = String.format("%12s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "X1" : X1 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "X2" : X2 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "X3" : X3 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0');
-            case "CC" : CC = String.format("%4s", Integer.toBinaryString(val)).replace(' ', '0');
+            case "R0" : R0 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "R1" : R1 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "R2" : R2 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "R3" : R3 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "idx" : idx = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "MBR" : MBR = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "MAR" : MAR = String.format("%12s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "MFR" : MFR = String.format("%4s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "PC" : PC = String.format("%12s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "X1" : X1 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "X2" : X2 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "X3" : X3 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
+            case "CC" : CC = String.format("%4s", Integer.toBinaryString(val)).replace(' ', '0'); break;
         }
     }
 
@@ -68,22 +68,22 @@ public class Registers {
     {
         String result;
         switch (reg_name) {
-            case "R0" : result = "R0"; break;
-            case "R1" :result  =  "R1"; break;  
-            case "R2" : result =  "R2"; break;
-            case "R3" : result =  "R3"; break;
-            case "idx" : result =  "idx"; break;
-            case "MBR" : result = "MBR"; break;
-            case "MAR" : result = "MAR"; break;
-            case "MFR" : result = "MFR"; break;
-            case "PC" : result = "PC";break;
-            case "X1" : result = "X1";break;
-            case "X2" : result = "X2";break;
-            case "X3" : result = "X3";break;
-            case "CC" : result =  "CC";break;
-            default : result = "Invalid input";break;
+            case "R0" : result = R0; break;
+            case "R1" :result  =  R1; break;
+            case "R2" : result =  R2; break;
+            case "R3" : result =  R3; break;
+            case "idx" : result =  idx; break;
+            case "MBR" : result = MBR; break;
+            case "MAR" : result = MAR; break;
+            case "MFR" : result = MFR; break;
+            case "PC" : result = PC; break;
+            case "X1" : result = X1; break;
+            case "X2" : result = X2; break;
+            case "X3" : result = X3; break;
+            case "CC" : result =  CC; break;
+            default : result = "Invalid input"; break;
         }
-            return result;
+        return result;
     }
 
 
@@ -91,23 +91,23 @@ public class Registers {
     {
         int result_int;
         switch (reg_name) {
-            case "R0" : result_int = Integer.parseInt(R0, 2);
-            case "R1" : result_int = Integer.parseInt(R1, 2);
-            case "R2" : result_int =  Integer.parseInt(R2, 2);
-            case "R3" : result_int = Integer.parseInt(R3, 2);
-            case "idx" : result_int = Integer.parseInt(idx, 2);
-            case "MBR" : result_int = Integer.parseInt(MBR, 2);
-            case "MAR" : result_int = Integer.parseInt(MAR, 2);
-            case "MFR" : result_int = Integer.parseInt(MFR, 2);
-            case "PC" : result_int = Integer.parseInt(PC, 2);
-            case "X1" : result_int =  Integer.parseInt(X1, 2);
-            case "X2" : result_int = Integer.parseInt(X2, 2);
-            case "X3" : result_int =  Integer.parseInt(X3, 2);
-            case "CC" : result_int =  Integer.parseInt(CC, 2);
-            default : result_int = 0;
+            case "R0" : result_int = Integer.parseInt(R0, 2); break;
+            case "R1" : result_int = Integer.parseInt(R1, 2); break;
+            case "R2" : result_int =  Integer.parseInt(R2, 2); break;
+            case "R3" : result_int = Integer.parseInt(R3, 2); break;
+            case "idx" : result_int = Integer.parseInt(idx, 2); break;
+            case "MBR" : result_int = Integer.parseInt(MBR, 2); break;
+            case "MAR" : result_int = Integer.parseInt(MAR, 2); break;
+            case "MFR" : result_int = Integer.parseInt(MFR, 2); break;
+            case "PC" : result_int = Integer.parseInt(PC, 2); break;
+            case "X1" : result_int =  Integer.parseInt(X1, 2); break;
+            case "X2" : result_int = Integer.parseInt(X2, 2); break;
+            case "X3" : result_int =  Integer.parseInt(X3, 2); break;
+            case "CC" : result_int =  Integer.parseInt(CC, 2); break;
+            default : result_int = 0; break;
         }
-        
-                return result_int;
+
+        return result_int;
     }
 
 }
