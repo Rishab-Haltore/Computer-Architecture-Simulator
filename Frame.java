@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 import java.lang.Thread;
+import javax.swing.JOptionPane;
 
 public class Frame extends JFrame {
 
@@ -836,7 +837,8 @@ public class Frame extends JFrame {
          * Check for valid length
          */
         if (jTextField.getText().length() <= 0) {
-            System.out.println("Error setting register value: invalid length");
+            JOptionPane.showMessageDialog(null, "Error setting register value: invalid length","ERROR", JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Error setting register value: invalid length");
             return;
         }
         /*
@@ -852,10 +854,12 @@ public class Frame extends JFrame {
 
     private void loadSwitchValue(JTextField jTextField) {
         if (this.switchValue.length() > jTextField.getText().length()) {
-            System.out.println("Warning: switch length is greater than register length. Only setting first " + jTextField.getText().length() + " bits.");
+            JOptionPane.showMessageDialog(null, "Warning: switch length is greater than register length. Only setting first " + jTextField.getText().length() + " bits.","Warning", JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Warning: switch length is greater than register length. Only setting first " + jTextField.getText().length() + " bits.");
         }
         String string = this.switchValue.substring(this.switchValue.length() - jTextField.getText().length());
         jTextField.setText(string);
+        // JOptionPane.showMessageDialog(null, jTextField.getName() + " is set to: " + string,"ERROR", JOptionPane.ERROR_MESSAGE);
         System.out.println(jTextField.getName() + " is set to: " + string);
     }
 
@@ -865,7 +869,8 @@ public class Frame extends JFrame {
         try {
             InputStream instream = getClass().getResourceAsStream("boot.txt");
             if (instream == null) {
-                System.out.println("Unable to get File boot.txt");
+                JOptionPane.showMessageDialog(null, "Unable to get File boot.txt","ERROR", JOptionPane.ERROR_MESSAGE);
+                // System.out.println("Unable to get File boot.txt");
                 return;
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(instream));
@@ -882,7 +887,8 @@ public class Frame extends JFrame {
                 refresh();
             }
         } catch (Exception e) {
-            System.out.println("Unable to load boot program :: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,"Unable to load boot program:\n"+e.getMessage().toString(),"Error",JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Unable to load boot program :: " + e.getMessage());
         }
 
 
@@ -890,7 +896,8 @@ public class Frame extends JFrame {
         try {
             InputStream instream = getClass().getResourceAsStream("Test.txt");
             if (instream == null) {
-                System.out.println("Unable to get File boot.txt");
+                JOptionPane.showMessageDialog(null, "Unable to get File boot.txt","ERROR", JOptionPane.ERROR_MESSAGE);
+                // System.out.println("Unable to get File boot.txt");
                 return;
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(instream));
@@ -913,7 +920,9 @@ public class Frame extends JFrame {
                 refresh();
             }
         } catch (Exception e) {
-            System.out.println("Unable to load boot program :: " + e.getMessage());
+
+            JOptionPane.showMessageDialog(this,"error:\n"+e.getMessage().toString(),"Error",JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Unable to load boot program :: " + e.getMessage());
         }
     }
 
