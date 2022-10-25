@@ -5,7 +5,7 @@ public class ALU
 
     public static void HLT()
     {
-        Frame.run = false;
+//        Frame.run = false;
     }
 
     public static void LDR(String R, String X, String I, String Address)
@@ -306,25 +306,26 @@ public class ALU
     }
 
 
-    public static void MLT(String R1, String R2) throws Exception
+    public static void MLT(String R1, String R2)
     {
         if ((Objects.equals(R1, "01")) || (Objects.equals(R1, "11")))
         {
-            throw new Exception("Use Registers 0 or 2. 1 or 3 must have been used");
+            throw new RuntimeException("Use Registers 0 or 2. 1 or 3 must have been used");
         }
 
         if ((Objects.equals(R1, "00") && Objects.equals(R2, "10")) || (Objects.equals(R1, "00") && Objects.equals(R2, "11")))
         {
-            throw new Exception("Ry is not Rx+1");
+            throw new RuntimeException("Ry is not Rx+1");
         }
 
         if ((Objects.equals(R1, "10") && Objects.equals(R2, "00")) || (Objects.equals(R1, "10") && Objects.equals(R2, "01")))
         {
-            throw new Exception("Ry is not Rx+1");
+            throw new RuntimeException("Ry is not Rx+1");
         }
 
         int val = 0;
         String val_string;
+        String cc_reg;
 
 
         if (Objects.equals(R1, "00"))
@@ -337,83 +338,72 @@ public class ALU
             val = Registers.get_register_value_int("R2") * Registers.get_register_value_int("R3");
         }
 
-
-        val_string = String.format("%17s", Integer.toBinaryString(val)).replace(' ', '0');
+        val_string = String.format("%33s", Integer.toBinaryString(val)).replace(' ', '0');
 
         if (val_string.charAt(0) == '1')
         {
-            String cc_reg;
-
-            cc_reg = "1" + Registers.get_register_value_string("CC").substring(1, 3);
-
-            Registers.update_registers("CC", Integer.parseInt(cc_reg));
+            cc_reg = "1" + Registers.get_register_value_string("CC").substring(1);
+            Registers.CC = cc_reg;
         }
         else
         {
-            String cc_reg;
-
-            cc_reg = "0" + Registers.get_register_value_string("CC").substring(1, 3);
-
-            Registers.update_registers("CC", Integer.parseInt(cc_reg));
+            cc_reg = "0" + Registers.get_register_value_string("CC").substring(1);
+            Registers.CC = cc_reg;
         }
 
         if (Objects.equals(R1, "00"))
         {
-            Registers.update_registers("R0", Integer.parseInt(val_string.substring(1, 9)));
-            Registers.update_registers("R1", Integer.parseInt(val_string.substring(9)));
+            Registers.R0 = val_string.substring(1, 17);
+            Registers.R1 = val_string.substring(17);
         }
 
         if (Objects.equals(R1, "10"))
         {
-            Registers.update_registers("R2", Integer.parseInt(val_string.substring(1, 9)));
-            Registers.update_registers("R3", Integer.parseInt(val_string.substring(9)));
+            Registers.R2 = val_string.substring(1, 17);
+            Registers.R3 = val_string.substring(17);
         }
 
     }
 
 
 
-    public static void DVD(String R1, String R2) throws Exception
+    public static void DVD(String R1, String R2)
     {
         if ((Objects.equals(R1, "01")) || (Objects.equals(R1, "11")))
         {
-            throw new Exception("Use Registers 0 or 2. 1 or 3 must have been used");
+            throw new RuntimeException("Use Registers 0 or 2. 1 or 3 must have been used");
         }
 
         if ((Objects.equals(R1, "00") && Objects.equals(R2, "10")) || (Objects.equals(R1, "00") && Objects.equals(R2, "11")))
         {
-            throw new Exception("Ry is not Rx+1");
+            throw new RuntimeException("Ry is not Rx+1");
         }
 
         if ((Objects.equals(R1, "10") && Objects.equals(R2, "00")) || (Objects.equals(R1, "10") && Objects.equals(R2, "01")))
         {
-            throw new Exception("Ry is not Rx+1");
+            throw new RuntimeException("Ry is not Rx+1");
         }
 
         int quotient = 0;
         int rem = 0;
+        String cc_reg;
+
+        System.out.println(Registers.get_register_value_string("CC"));
 
 
         if (Objects.equals(R1, "00"))
         {
             if (Registers.get_register_value_int("R1") == 0)
             {
-                String cc_reg;
-
-                cc_reg = Registers.get_register_value_string("CC").charAt(0) + Registers.get_register_value_string("CC").charAt(1) + "1" + Registers.get_register_value_string("CC").charAt(3);
-
-                Registers.update_registers("CC", Integer.parseInt(cc_reg));
+                cc_reg = Registers.get_register_value_string("CC").substring(0,1) + Registers.get_register_value_string("CC").substring(1, 2) + "1" + Registers.get_register_value_string("CC").substring(3);
+                Registers.CC = cc_reg;
                 return;
             }
             else
             {
-                String cc_reg;
-
-                cc_reg = Registers.get_register_value_string("CC").charAt(0) + Registers.get_register_value_string("CC").charAt(1) + "0" + Registers.get_register_value_string("CC").charAt(3);
-
-                Registers.update_registers("CC", Integer.parseInt(cc_reg));
+                cc_reg = Registers.get_register_value_string("CC").substring(0,1) + Registers.get_register_value_string("CC").substring(1, 2) + "0" + Registers.get_register_value_string("CC").substring(3);
+                Registers.CC = cc_reg;
             }
-
 
             quotient = Registers.get_register_value_int("R0") / Registers.get_register_value_int("R1");
             rem = Registers.get_register_value_int("R0") % Registers.get_register_value_int("R1");
@@ -423,22 +413,15 @@ public class ALU
         {
             if (Registers.get_register_value_int("R3") == 0)
             {
-                String cc_reg;
-
-                cc_reg = Registers.get_register_value_string("CC").charAt(0) + Registers.get_register_value_string("CC").charAt(1) + "1" + Registers.get_register_value_string("CC").charAt(3);
-
-                Registers.update_registers("CC", Integer.parseInt(cc_reg));
+                cc_reg = Registers.get_register_value_string("CC").substring(0,1) + Registers.get_register_value_string("CC").substring(1, 2) + "1" + Registers.get_register_value_string("CC").substring(3);
+                Registers.CC = cc_reg;
                 return;
             }
             else
             {
-                String cc_reg;
-
-                cc_reg = Registers.get_register_value_string("CC").charAt(0) + Registers.get_register_value_string("CC").charAt(1) + "0" + Registers.get_register_value_string("CC").charAt(3);
-
-                Registers.update_registers("CC", Integer.parseInt(cc_reg));
+                cc_reg = Registers.get_register_value_string("CC").substring(0,1) + Registers.get_register_value_string("CC").substring(1, 2) + "0" + Registers.get_register_value_string("CC").substring(3);
+                Registers.CC = cc_reg;
             }
-
 
             quotient = Registers.get_register_value_int("R2") / Registers.get_register_value_int("R3");
             rem = Registers.get_register_value_int("R2") % Registers.get_register_value_int("R3");
