@@ -1,6 +1,4 @@
 public class Utils {
-
-
     public static String[] InstructionSet1 = {"LDR", "STR", "LDA", "LDX", "STX", "JZ", "JNE", "JCC", "JMA", "JSR", "RFS", "SOB", "JGE", "AMR", "SMR", "AIR", "SIR"};
     public static String[] InstructionSet2 = {"MLT", "DVD", "TRR", "AND", "ORR", "NOT"};
     public static String[] InstructionSet3 = {"SRC", "RRC"};
@@ -48,19 +46,30 @@ public class Utils {
 
         operation = TempOperands[0];
 
-        for (int temp_var = 0; temp_var < InstructionSet1.length; temp_var++) {
+
+
+        /* For Instruction Set 1 */
+
+        for (int temp_var = 0; temp_var < InstructionSet1.length; temp_var++)
+        {
             if (InstructionSet1[temp_var].equals(operation)) {
                 if (TempOperands[TempOperands.length - 1].equals("I")) {
                     I_bin = "1";
 
-                    try {
+                    try
+                    {
                         Address_int = Integer.parseInt(TempOperands[TempOperands.length - 1]);
                         Address_bin = String.format("%5s", Integer.toBinaryString(Address_int)).replace(' ', '0');
-                    } catch (Exception e) {
-                        try {
+                    }
+                    catch (Exception e)
+                    {
+                        try
+                        {
                             Address_int = Integer.parseInt(TempOperands[TempOperands.length - 2]);
                             Address_bin = String.format("%5s", Integer.toBinaryString(Address_int)).replace(' ', '0');
-                        } catch (Exception e1) {
+                        }
+                        catch (Exception e1)
+                        {
                             Address_int = 0;
                             Address_bin = "00000";
                             x = 1;
@@ -261,9 +270,7 @@ public class Utils {
 
 
 
-
-
-
+        /* For Instruction Set 2 */
 
         for (int temp_var = 0; temp_var < InstructionSet2.length; temp_var++) {
             if (InstructionSet2[temp_var].equals(operation)) {
@@ -282,73 +289,76 @@ public class Utils {
                             break;
                     }
                 }
+
+                System.out.println(operand1 + " " + operand2);
+
+                if ((operand1.charAt(0) == 'X') | (operand2.charAt(0) == 'X')) {
+
+                    throw new Exception("Operation does not support X Registers");
+                }
+
+                switch (operand1) {
+                    case "R0":
+                        Reg_bin = "00";
+                        break;
+                    case "R1":
+                        Reg_bin = "01";
+                        break;
+                    case "R2":
+                        Reg_bin = "10";
+                        break;
+                    case "R3":
+                        Reg_bin = "11";
+                        break;
+                }
+
+                switch (operand2) {
+                    case "R0":
+                        Reg2_bin = "00";
+                        break;
+                    case "R1":
+                        Reg2_bin = "01";
+                        break;
+                    case "R2":
+                        Reg2_bin = "10";
+                        break;
+                    case "R3":
+                        Reg2_bin = "11";
+                        break;
+                }
+
+
+                switch (operation) {
+                    case "MLT":
+                        operation_bin = "010100";
+                        break;
+                    case "DVD":
+                        operation_bin = "010101";
+                        break;
+                    case "TRR":
+                        operation_bin = "010110";
+                        break;
+                    case "AND":
+                        operation_bin = "010111";
+                        break;
+                    case "ORR":
+                        operation_bin = "011000";
+                        break;
+                    case "NOT":
+                        operation_bin = "011001";
+                        break;
+                }
+
+                InstructionCode = operation_bin + Reg_bin + Reg2_bin + "000000";
+
+                return InstructionCode;
             }
 
-            if ((operand1.charAt(0) == 'X') | (operand2.charAt(0) == 'X')) {
-
-                throw new Exception("Operation does not support X Registers");
-            }
-
-            switch (operand1) {
-                case "R0":
-                    Reg_bin = "00";
-                    break;
-                case "R1":
-                    Reg_bin = "01";
-                    break;
-                case "R2":
-                    Reg_bin = "10";
-                    break;
-                case "R3":
-                    Reg_bin = "11";
-                    break;
-                default:
-                    Reg_bin = "00";
-            }
-
-            switch (operand2) {
-                case "R0":
-                    Reg2_bin = "00";
-                    break;
-                case "R1":
-                    Reg2_bin = "01";
-                    break;
-                case "R2":
-                    Reg2_bin = "10";
-                    break;
-                case "R3":
-                    Reg2_bin = "11";
-                    break;
-            }
-
-
-            switch (operation) {
-                case "MLT":
-                    operation_bin = "010100";
-                    break;
-                case "DVD":
-                    operation_bin = "010101";
-                    break;
-                case "TRR":
-                    operation_bin = "010110";
-                    break;
-                case "AND":
-                    operation_bin = "010111";
-                    break;
-                case "ORR":
-                    operation_bin = "011000";
-                    break;
-                case "NOT":
-                    operation_bin = "011001";
-                    break;
-            }
-
-            InstructionCode = operation_bin + Reg_bin + Reg2_bin + "000000";
-            }
+        }
 
 
 
-
+        /* For Instruction Set 3 */
 
 
 
@@ -385,11 +395,9 @@ public class Utils {
                                 break;
                         }
                     }
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     throw new Exception("Not Enough Operands");
                 }
-            }
 
             switch (operand1) {
                 case "R0":
@@ -420,7 +428,10 @@ public class Utils {
             }
 
             InstructionCode = operation_bin + Reg_bin + AL + LR + "00" + Count_bin;
+
+            return InstructionCode;
         }
+    }
 
 
 
@@ -437,47 +448,46 @@ public class Utils {
 
 
                 operand1 = TempOperands[1];
+
+                if ((operand1.charAt(0) != 'R')) {
+
+                    throw new Exception("Wrong Register Given");
+                }
+
+                switch (operand1) {
+                    case "R0":
+                        Reg_bin = "00";
+                        break;
+                    case "R1":
+                        Reg_bin = "01";
+                        break;
+                    case "R2":
+                        Reg_bin = "10";
+                        break;
+                    case "R3":
+                        Reg_bin = "11";
+                        break;
+                    default:
+                        Reg_bin = "00";
+                }
+
+
+                switch (operation) {
+                    case "IN":
+                        operation_bin = "111101";
+                        break;
+                    case "OUT":
+                        operation_bin = "111110";
+                        break;
+                    case "CHK":
+                        operation_bin = "111111";
+                        break;
+                }
+
+                InstructionCode = operation_bin + Reg_bin + "000" + DevId_bin;
+                return InstructionCode;
             }
-
-            if ((operand1.charAt(0) != 'R')) {
-
-                throw new Exception("Wrong Register Given");
-            }
-
-            switch (operand1) {
-                case "R0":
-                    Reg_bin = "00";
-                    break;
-                case "R1":
-                    Reg_bin = "01";
-                    break;
-                case "R2":
-                    Reg_bin = "10";
-                    break;
-                case "R3":
-                    Reg_bin = "11";
-                    break;
-                default:
-                    Reg_bin = "00";
-            }
-
-
-
-            switch (operation) {
-                case "IN":
-                    operation_bin = "111101";
-                    break;
-                case "OUT":
-                    operation_bin = "111110";
-                    break;
-                case "CHK":
-                    operation_bin = "111111";
-                    break;
-            }
-
-            InstructionCode = operation_bin + Reg_bin + "000" + DevId_bin;
         }
-
         return InstructionCode;
     }
 
@@ -705,7 +715,23 @@ public class Utils {
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println(Utils.generate_opcode("IN R3, 22"));
+        Registers.create_reset_registers();
+
+        Registers.update_registers("R0", 10000);
+        Registers.update_registers("R1", 0);
+
+        String Instruction_Machine = "DVD R0, R1";
+
+
+        System.out.println("Instruction Code -------->  " + Utils.generate_opcode(Instruction_Machine + "\n"));
+
+        execute(Utils.generate_opcode(Instruction_Machine));
+
+        System.out.println("Register 0 String-------->  " + Registers.get_register_value_string("R0"));
+        System.out.println("Register 1 String-------->  " + Registers.get_register_value_string("R1") + "\n");
+        System.out.println("Register 0 Int----------->  " + Registers.get_register_value_int("R0"));
+        System.out.println("Register 1 Int----------->  " + Registers.get_register_value_int("R1") + "\n");
+        System.out.println("CC Register String------->  " + Registers.get_register_value_string("CC"));
     }
 
 }
