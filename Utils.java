@@ -1,5 +1,3 @@
-import com.sun.source.tree.SynchronizedTree;
-
 public class Utils {
 
 
@@ -10,7 +8,7 @@ public class Utils {
 
     public static String generate_opcode(String instruction) throws Exception
     {
-        String operation = "none";
+        String operation;
         String operand1 = "None";
         String operand2 = "none";
         String operand3 = "None";
@@ -27,11 +25,11 @@ public class Utils {
         String Reg_bin = "00";
         String Reg2_bin = "00";
         String X_bin = "00";
-        String I_bin = "0";
-        String Address_bin = "00000";
+        String I_bin;
+        String Address_bin;
         String DevId_bin = "00000";
-        String AL = "0";
-        String LR = "0";
+        String AL;
+        String LR;
         String Count_bin = "00000";
 
         String[] TempOperands = instruction.split("\\s+");
@@ -406,8 +404,6 @@ public class Utils {
                 case "R3":
                     Reg_bin = "11";
                     break;
-                default:
-                    Reg_bin = "00";
             }
 
             AL = operand2;
@@ -486,18 +482,42 @@ public class Utils {
     }
 
 
-    public static void execute(String OpCode) {
+    public static void execute(String OpCode) throws Exception
+    {
         String operation = OpCode.substring(0, 6);
         String operation_name = "None";
 
         switch (operation)
         {
             case "000001" : operation_name = "LDR"; break;
-            case "000002" : operation_name = "STR"; break;
-            // Complete This
+            case "000010" : operation_name = "STR"; break;
+            case "000011" : operation_name = "LDA"; break;
+            case "101001" : operation_name = "LDX"; break;
+            case "101010" : operation_name = "STX"; break;
+            case "001010" : operation_name = "JZ"; break;
+            case "001011" : operation_name = "JNE"; break;
+            case "001100" : operation_name = "JCC"; break;
+            case "001101" : operation_name = "JMA"; break;
+            case "001110" : operation_name = "JSR"; break;
+            case "001111" : operation_name = "RFS"; break;
+            case "010000" : operation_name = "SOB"; break;
+            case "010001" : operation_name = "JGE"; break;
+            case "000100" : operation_name = "AMR"; break;
+            case "000101" : operation_name = "SMR"; break;
+            case "000110" : operation_name = "AIR"; break;
+            case "000111" : operation_name = "SIR"; break;
+            case "010100" : operation_name = "MLT"; break;
+            case "010101" : operation_name = "DVD"; break;
+            case "010110" : operation_name = "TRR"; break;
+            case "010111" : operation_name = "AND"; break;
+            case "011000" : operation_name = "ORR"; break;
+            case "011001" : operation_name = "NOT"; break;
+            case "011111" : operation_name = "SRC"; break;
+            case "100000" : operation_name = "RRC"; break;
+            case "111101" : operation_name = "IN"; break;
+            case "111110" : operation_name = "OUT"; break;
+            case "111111" : operation_name = "CHK"; break;
         }
-
-
 
 
 
@@ -521,9 +541,48 @@ public class Utils {
                     case "000011":
                         ALU.LDA(R, X, I, Address);
                         break;
-
-                        // Complete this switch-case
-
+                    case "101001":
+                        ALU.LDX(X, I, Address);
+                        break;
+                    case "101010":
+                        ALU.STX(X, I, Address);
+                        break;
+                    case "001010":
+                        ALU.JZ(R, X, I, Address);
+                        break;
+                    case "001011":
+                        ALU.JNE(R, X, I, Address);
+                        break;
+                    case "001100":
+                        ALU.JCC(R, X, I, Address);
+                        break;
+                    case "001101":
+                        ALU.JMA(X, I, Address);
+                        break;
+                    case "001110":
+                        ALU.JSR(X, I, Address);
+                        break;
+                    case "001111":
+                        ALU.RFS(Address);
+                        break;
+                    case "010000":
+                        ALU.SOB(R, X, I, Address);
+                        break;
+                    case "010001":
+                        ALU.JGE(R, X, I, Address);
+                        break;
+                    case "000100":
+                        ALU.AMR(R, X, I, Address);
+                        break;
+                    case "000101":
+                        ALU.SMR(R, X, I, Address);
+                        break;
+                    case "000110":
+                        ALU.AIR(R, Address);
+                        break;
+                    case "000111":
+                        ALU.SIR(R, Address);
+                        break;
                 }
             }
         }
@@ -536,13 +595,24 @@ public class Utils {
                 String R2 = OpCode.substring(8, 10);
 
                 switch (operation) {
-                    case "000001":
+                    case "010100":
                         ALU.MLT(R1, R2);
                         break;
-                    case "000010":
-                        ALU.DVD(R, X, I, Address);
+                    case "010101":
+                        ALU.DVD(R1, R2);
                         break;
-                //Complete this Switch Case
+                    case "010110":
+                        ALU.TRR(R1, R2);
+                        break;
+                    case "010111":
+                        ALU.AND(R1, R2);
+                        break;
+                    case "011000":
+                        ALU.ORR(R1, R2);
+                        break;
+                    case "011001":
+                        ALU.NOT(R1);
+                        break;
                 }
             }
         }
@@ -557,13 +627,12 @@ public class Utils {
                 String Count = OpCode.substring(13);
 
                 switch (operation) {
-                    case "000001":
+                    case "011111":
                         ALU.SRC(R1, AL, RL, Count);
                         break;
-                    case "000010":
+                    case "100000":
                         ALU.RRC(R1, AL, RL, Count);
                         break;
-                    //Complete this Switch Case
                 }
             }
         }
@@ -576,13 +645,15 @@ public class Utils {
                 String DevId = OpCode.substring(11);
 
                 switch (operation) {
-                    case "000001":
+                    case "111101":
                         ALU.IN(R1, DevId);
                         break;
-                    case "000010":
+                    case "111110":
                         ALU.OUT(R1, DevId);
                         break;
-                    //Complete this Switch Case
+                    case "111111":
+                        ALU.CHK(R1, DevId);
+                        break;
                 }
             }
         }
