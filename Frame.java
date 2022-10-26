@@ -12,7 +12,8 @@ import java.io.*;
 import java.util.concurrent.TimeUnit;
 import java.lang.Thread;
 import javax.swing.JOptionPane;
-
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 public class Frame extends JFrame {
 
     private JTextField GPR0BitField;
@@ -30,6 +31,7 @@ public class Frame extends JFrame {
     private JTextField CCBitField;
     private JTextArea MachineCodeBitField;
     private JTextArea DescBitField;
+    private JTextField PrinterTextField;
     private JButton IPLButton;
 
 
@@ -144,6 +146,7 @@ public class Frame extends JFrame {
         this.addCC(processingPanel);
         this.addDescription(processingPanel);
         this.addMachineCode(processingPanel);
+        this.addPrinterTextField(processingPanel);
         this.addRun(processingPanel);
         this.addStoreAndLoad(commandPanel);
         this.addSwitches(bitPanel);
@@ -284,6 +287,39 @@ public class Frame extends JFrame {
         panel.add(scroll);
         panel.add(DescBitField);
 
+    }
+
+    //printer to input numbers in the text field 
+
+    private void addPrinterTextField(JPanel panel){
+        JLabel printerJLabel = new JLabel("Printer");
+        printerJLabel.setBounds( 655, 340, 900, textFieldHeight);
+        PrinterTextField = new JTextField(40);
+
+        this.PrinterTextField.setBounds(600, 370, 200,textFieldHeight);
+        panel.add(printerJLabel);
+        panel.add(PrinterTextField);
+
+
+        PrinterTextField.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent ke) {
+               String value = PrinterTextField.getText();
+               int l = value.length();
+               System.out.println(value);
+               if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                PrinterTextField.setEditable(true);
+                // printerJLabel.setText("");
+               } else {
+                // refresh();
+                PrinterTextField.setEditable(false);
+                // printerJLabel.setText("* Enter only numeric digits(0-9)");
+                JOptionPane.showMessageDialog(null, "Enter only numeric digits(0-9)","ERROR", JOptionPane.ERROR_MESSAGE);
+           
+                
+               }
+            }
+         });
+       
     }
 
 
@@ -826,6 +862,7 @@ public class Frame extends JFrame {
         this.MBRBitField.setText(Registers.MBR);
         this.IRBitField.setText(Registers.idx);
         this.MFRBitField.setText(Registers.MFR);
+        this.PrinterTextField.setText("");
         this.switchValue = "0".repeat(16);
         for (JToggleButton jToggleButton : this.switches) {
             jToggleButton.setSelected(false);
