@@ -1,6 +1,6 @@
 public class Utils {
     public static String[] InstructionSet1 = {"LDR", "STR", "LDA", "LDX", "STX", "JZ", "JNE", "JCC", "JMA", "JSR", "RFS", "SOB", "JGE", "AMR", "SMR", "AIR", "SIR"};
-    public static String[] InstructionSet2 = {"MLT", "DVD", "TRR", "AND", "ORR", "NOT"};
+    public static String[] InstructionSet2 = {"MLT", "DVD", "TRR", "AND", "ORR", "NOT", "ABS"};
     public static String[] InstructionSet3 = {"SRC", "RRC"};
     public static String[] InstructionSet4 = {"IN", "OUT", "CHK"};
 
@@ -347,6 +347,9 @@ public class Utils {
                     case "NOT":
                         operation_bin = "011001";
                         break;
+                    case "ABS":
+                        operation_bin = "110010";
+                        break;
                 }
 
                 InstructionCode = operation_bin + Reg_bin + Reg2_bin + "000000";
@@ -492,7 +495,7 @@ public class Utils {
     }
 
 
-    public static void execute(String OpCode) throws Exception
+    public static void execute(String OpCode)
     {
         String operation = OpCode.substring(0, 6);
         String operation_name = "None";
@@ -527,6 +530,8 @@ public class Utils {
             case "111101" : operation_name = "IN"; break;
             case "111110" : operation_name = "OUT"; break;
             case "111111" : operation_name = "CHK"; break;
+
+            case "110010": operation_name = "ABS"; break;
         }
 
 
@@ -623,6 +628,9 @@ public class Utils {
                     case "011001":
                         ALU.NOT(R1);
                         break;
+                    case "110010":
+                        ALU.ABS(R1, R2);
+                        break;
                 }
             }
         }
@@ -649,8 +657,8 @@ public class Utils {
 
 
 
-        for (int temp_var = 0; temp_var < InstructionSet3.length; temp_var++) {
-            if (InstructionSet3[temp_var].equals(operation_name)) {
+        for (int temp_var = 0; temp_var < InstructionSet4.length; temp_var++) {
+            if (InstructionSet4[temp_var].equals(operation_name)) {
                 String R1 = OpCode.substring(6, 8);
                 String DevId = OpCode.substring(11);
 
