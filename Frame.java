@@ -328,6 +328,7 @@ public class Frame extends JFrame {
         JLabel printResultJLabel = new JLabel("Output");
         printResultJLabel.setBounds( 450, 340, 900, textFieldHeight);
         printResultTextField = new JTextField(40);
+        printResultTextField.setEditable(false);
 
         this.printResultTextField.setBounds(380, 370, 200,textFieldHeight);
         panel.add(printResultJLabel);
