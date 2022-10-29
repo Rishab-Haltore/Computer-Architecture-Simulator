@@ -32,6 +32,7 @@ public class Frame extends JFrame {
     private JTextArea MachineCodeBitField;
     private JTextArea DescBitField;
     private JTextField PrinterTextField;
+    private JTextField printResultTextField;
     private JButton IPLButton;
 
 
@@ -147,6 +148,7 @@ public class Frame extends JFrame {
         this.addDescription(processingPanel);
         this.addMachineCode(processingPanel);
         this.addPrinterTextField(processingPanel);
+        this.addPrintResultTextField(processingPanel);
         this.addRun(processingPanel);
         this.addStoreAndLoad(commandPanel);
         this.addSwitches(bitPanel);
@@ -319,6 +321,18 @@ public class Frame extends JFrame {
                }
             }
          });
+       
+    }
+
+    private void addPrintResultTextField(JPanel panel){
+        JLabel printResultJLabel = new JLabel("Output");
+        printResultJLabel.setBounds( 450, 340, 900, textFieldHeight);
+        printResultTextField = new JTextField(40);
+
+        this.printResultTextField.setBounds(380, 370, 200,textFieldHeight);
+        panel.add(printResultJLabel);
+        panel.add(printResultTextField);
+
        
     }
 
