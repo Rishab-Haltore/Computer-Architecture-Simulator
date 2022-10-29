@@ -302,7 +302,7 @@ public class Frame extends JFrame {
 
 
         PrinterTextField.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent ke) {
+            public void keyReleased(KeyEvent ke) {
                String value = PrinterTextField.getText();
                int l = value.length();
                System.out.println(value);
