@@ -1,11 +1,16 @@
 import java.util.Objects;
+import java.lang.Math;
 
 public class ALU
 {
 
+
+    public static int KeyboardInput = 0;
+    public static String DescText = "";
+
     public static void HLT()
     {
-//        Frame.run = false;
+        Frame.run = false;
     }
 
     public static void LDR(String R, String X, String I, String Address)
@@ -542,6 +547,40 @@ public class ALU
     }
 
 
+    public static void ABS(String R1, String R2)
+    {
+        String Rx = "";
+        String Ry = "";
+
+        switch(R1)
+        {
+            case "00": Rx = "R0"; break;
+            case "01": Rx = "R1"; break;
+            case "10": Rx = "R2"; break;
+            case "11": Rx = "R3"; break;
+        }
+
+        switch(R2)
+        {
+            case "00": Ry = "R0"; break;
+            case "01": Ry = "R1"; break;
+            case "10": Ry = "R2"; break;
+            case "11": Ry = "R3"; break;
+        }
+
+        int val = Math.abs(Registers.get_register_value_int(Rx) - Registers.get_register_value_int(Ry));
+
+        Registers.update_registers(Rx, val);
+    }
+
+
+
+
+
+
+
+
+
 
 
     public static void SRC(String R, String RL, String AL, String Count)
@@ -589,22 +628,97 @@ public class ALU
 
         String val_string = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0').substring(0,16);
 
+        switch (sol_reg)
+        {
+            case "R0" : Registers.R0 = val_string; break;
+            case "R1" : Registers.R1 = val_string; break;
+            case "R2" : Registers.R2 = val_string; break;
+            case "R3" : Registers.R3 = val_string; break;
+        }
+
     }
 
 
     public static void RRC(String R, String AL, String RL, String Count)
     {
+        int val=0;
+        String sol_reg = "R0";
 
+        switch (R)
+        {
+            case "00": val = Registers.get_register_value_int("R0"); sol_reg = "R0"; break;
+            case "01": val = Registers.get_register_value_int("R1"); sol_reg = "R1"; break;
+            case "10": val = Registers.get_register_value_int("R2"); sol_reg = "R2"; break;
+            case "11": val = Registers.get_register_value_int("R3"); sol_reg = "R3"; break;
+        }
+
+        int count = Integer.parseInt(Count);
+
+        if (count == 0)
+        {
+            return;
+        }
+
+        if (Objects.equals(RL, "0"))
+        {
+            val = Integer.rotateRight(val, count);
+        }
+        else if (Objects.equals(AL, "1"))
+        {
+            val = Integer.rotateLeft(val, count);
+        }
+
+        String val_string = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0').substring(0,16);
+
+        switch (sol_reg)
+        {
+            case "R0" : Registers.R0 = val_string; break;
+            case "R1" : Registers.R1 = val_string; break;
+            case "R2" : Registers.R2 = val_string; break;
+            case "R3" : Registers.R3 = val_string; break;
+        }
     }
+
+
+
+
+
+
+
+
+
+
 
     public static void IN(String R, String DevId)
     {
-
+        if (Integer.parseInt(DevId) == 0)
+        {
+            KeyboardInput = Integer.parseInt(Frame.value);
+            switch (R)
+            {
+                case "00" : Registers.update_registers("R0", KeyboardInput);
+                case "01" : Registers.update_registers("R1", KeyboardInput);
+                case "10" : Registers.update_registers("R2", KeyboardInput);
+                case "11" : Registers.update_registers("R3", KeyboardInput);
+            }
+        }
     }
 
     public static void OUT(String R, String DevId)
     {
+        if (Integer.parseInt(DevId) == 1) {
 
+            switch (R) {
+                case "00":
+                    DescText = String.valueOf(Registers.get_register_value_int("R0"));
+                case "01":
+                    DescText = String.valueOf(Registers.get_register_value_int("R1"));
+                case "10":
+                    DescText = String.valueOf(Registers.get_register_value_int("R2"));
+                case "11":
+                    DescText = String.valueOf(Registers.get_register_value_int("R3"));
+            }
+        }
     }
 
 
