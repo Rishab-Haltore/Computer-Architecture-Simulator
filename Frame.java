@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 import java.lang.Thread;
-
+import javax.swing.JOptionPane;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 public class Frame extends JFrame {
 
     private JTextField GPR0BitField;
@@ -29,7 +31,10 @@ public class Frame extends JFrame {
     private JTextField CCBitField;
     private JTextArea MachineCodeBitField;
     private JTextArea DescBitField;
+    private JTextField KeyboardTextField;
     private JButton IPLButton;
+
+    public static String value;
 
 
     private String switchValue;
@@ -41,7 +46,7 @@ public class Frame extends JFrame {
 
 
     static boolean run = true;
-    static public String[] InstructionArray = new String[50];
+    static public String[] InstructionArray = new String[1000];
     static int PC_pointer;
 
 
@@ -143,6 +148,7 @@ public class Frame extends JFrame {
         this.addCC(processingPanel);
         this.addDescription(processingPanel);
         this.addMachineCode(processingPanel);
+        this.addKeyboardTextField(processingPanel);
         this.addRun(processingPanel);
         this.addStoreAndLoad(commandPanel);
         this.addSwitches(bitPanel);
@@ -282,6 +288,40 @@ public class Frame extends JFrame {
         panel.add(DescriptionJLabel);
         panel.add(scroll);
         panel.add(DescBitField);
+
+    }
+
+    //Keyboard to input numbers in the text field
+
+    private void addKeyboardTextField(JPanel panel){
+        JLabel KeyboardJLabel = new JLabel("Input");
+        KeyboardJLabel.setBounds( 655, 340, 900, textFieldHeight);
+        KeyboardTextField = new JTextField(40);
+
+        this.KeyboardTextField.setBounds(600, 370, 200,textFieldHeight);
+        panel.add(KeyboardJLabel);
+        panel.add(KeyboardTextField);
+
+
+        KeyboardTextField.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent ke) {
+                value = KeyboardTextField.getText();
+                int l = value.length();
+                System.out.println(value);
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                    KeyboardTextField.setEditable(true);
+                    // KeyboardJLabel.setText("");
+                } else {
+                    // refresh();
+                    KeyboardTextField.setEditable(false);
+                    // KeyboardJLabel.setText("* Enter only numeric digits(0-9)");
+                    JOptionPane.showMessageDialog(null, "Enter only numeric digits(0-9)","ERROR", JOptionPane.ERROR_MESSAGE);
+
+
+                }
+
+            }
+        });
 
     }
 
@@ -751,7 +791,6 @@ public class Frame extends JFrame {
         panel.add(storeButton);
         panel.add(loadButton);
         panel.add(nextStepButton);
-        panel.add(nextStepButton);
         panel.add(resetButton);
     }
 
@@ -765,8 +804,6 @@ public class Frame extends JFrame {
         Utils.execute(Registers.get_register_value_string("idx"));
 
         Registers.update_registers("PC", Registers.get_register_value_int("PC") + 1);
-
-        Utils.execute(Registers.get_register_value_string("idx"));
 
         try {
             MachineCodeBitField.setText(InstructionArray[Registers.get_register_value_int("PC") - PC_pointer]);
@@ -796,9 +833,31 @@ public class Frame extends JFrame {
         this.IRBitField.setText(Registers.idx);
         this.MFRBitField.setText(Registers.MFR);
         this.switchValue = "0".repeat(16);
+        this.DescBitField.setText(ALU.Val_20_int);
         for (JToggleButton jToggleButton : this.switches) {
             jToggleButton.setSelected(false);
         }
+
+
+
+
+//        ALU.Val_20_int = "";
+//        for(int i = 20; i < 40; i++)
+//        {
+//            ALU.Val_20_int = ALU.Val_20_int + Memory.get_from_memory_int(i) + "  ";
+//        }
+//        System.out.println(ALU.Val_20_int);
+//
+//
+//        ALU.Val_20_int2 = "";
+//        for(int i = 60; i < 80; i++)
+//        {
+//            ALU.Val_20_int2 = ALU.Val_20_int2 + Memory.get_from_memory_int(i) + "  ";
+//        }
+//        System.out.println(ALU.Val_20_int2);
+
+
+
 
         this.invalidate();
         this.validate();
@@ -825,6 +884,7 @@ public class Frame extends JFrame {
         this.MBRBitField.setText(Registers.MBR);
         this.IRBitField.setText(Registers.idx);
         this.MFRBitField.setText(Registers.MFR);
+        this.KeyboardTextField.setText("");
         this.switchValue = "0".repeat(16);
         for (JToggleButton jToggleButton : this.switches) {
             jToggleButton.setSelected(false);
@@ -836,7 +896,8 @@ public class Frame extends JFrame {
          * Check for valid length
          */
         if (jTextField.getText().length() <= 0) {
-            System.out.println("Error setting register value: invalid length");
+            JOptionPane.showMessageDialog(null, "Error setting register value: invalid length","ERROR", JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Error setting register value: invalid length");
             return;
         }
         /*
@@ -852,10 +913,12 @@ public class Frame extends JFrame {
 
     private void loadSwitchValue(JTextField jTextField) {
         if (this.switchValue.length() > jTextField.getText().length()) {
-            System.out.println("Warning: switch length is greater than register length. Only setting first " + jTextField.getText().length() + " bits.");
+            JOptionPane.showMessageDialog(null, "Warning: switch length is greater than register length. Only setting first " + jTextField.getText().length() + " bits.","Warning", JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Warning: switch length is greater than register length. Only setting first " + jTextField.getText().length() + " bits.");
         }
         String string = this.switchValue.substring(this.switchValue.length() - jTextField.getText().length());
         jTextField.setText(string);
+        // JOptionPane.showMessageDialog(null, jTextField.getName() + " is set to: " + string,"ERROR", JOptionPane.ERROR_MESSAGE);
         System.out.println(jTextField.getName() + " is set to: " + string);
     }
 
@@ -865,7 +928,8 @@ public class Frame extends JFrame {
         try {
             InputStream instream = getClass().getResourceAsStream("boot.txt");
             if (instream == null) {
-                System.out.println("Unable to get File boot.txt");
+                JOptionPane.showMessageDialog(null, "Unable to get File boot.txt","ERROR", JOptionPane.ERROR_MESSAGE);
+                // System.out.println("Unable to get File boot.txt");
                 return;
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(instream));
@@ -882,15 +946,17 @@ public class Frame extends JFrame {
                 refresh();
             }
         } catch (Exception e) {
-            System.out.println("Unable to load boot program :: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,"Unable to load boot program:\n"+e.getMessage().toString(),"Error",JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Unable to load boot program :: " + e.getMessage());
         }
 
 
         // Load Program from address 110
         try {
-            InputStream instream = getClass().getResourceAsStream("Test.txt");
+            InputStream instream = getClass().getResourceAsStream("Program 2.txt");
             if (instream == null) {
-                System.out.println("Unable to get File boot.txt");
+                JOptionPane.showMessageDialog(null, "Unable to get File boot.txt","ERROR", JOptionPane.ERROR_MESSAGE);
+                // System.out.println("Unable to get File boot.txt");
                 return;
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(instream));
@@ -913,7 +979,9 @@ public class Frame extends JFrame {
                 refresh();
             }
         } catch (Exception e) {
-            System.out.println("Unable to load boot program :: " + e.getMessage());
+
+            JOptionPane.showMessageDialog(this,"error:\n"+e.getMessage().toString(),"Error",JOptionPane.ERROR_MESSAGE);
+            // System.out.println("Unable to load boot program :: " + e.getMessage());
         }
     }
 
