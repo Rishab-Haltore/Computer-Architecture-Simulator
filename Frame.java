@@ -32,6 +32,7 @@ public class Frame extends JFrame {
     private JTextArea MachineCodeBitField;
     private JTextArea DescBitField;
     private JTextField KeyboardTextField;
+    private JTextField printResultTextField;
     private JButton IPLButton;
 
     public static String value;
@@ -149,6 +150,7 @@ public class Frame extends JFrame {
         this.addDescription(processingPanel);
         this.addMachineCode(processingPanel);
         this.addKeyboardTextField(processingPanel);
+        this.addPrintResultTextField(processingPanel);
         this.addRun(processingPanel);
         this.addStoreAndLoad(commandPanel);
         this.addSwitches(bitPanel);
@@ -322,6 +324,19 @@ public class Frame extends JFrame {
 
             }
         });
+
+    }
+
+
+    private void addPrintResultTextField(JPanel panel){
+        JLabel printResultJLabel = new JLabel("Console");
+        printResultJLabel.setBounds( 450, 340, 900, textFieldHeight);
+        printResultTextField = new JTextField(40);
+
+        this.printResultTextField.setBounds(380, 370, 200,textFieldHeight);
+        panel.add(printResultJLabel);
+        panel.add(printResultTextField);
+
 
     }
 
@@ -832,6 +847,7 @@ public class Frame extends JFrame {
         this.MBRBitField.setText(Registers.MBR);
         this.IRBitField.setText(Registers.idx);
         this.MFRBitField.setText(Registers.MFR);
+        this.printResultTextField.setText(ALU.DescText);
         this.switchValue = "0".repeat(16);
         this.DescBitField.setText(ALU.Val_20_int);
         for (JToggleButton jToggleButton : this.switches) {
@@ -885,6 +901,7 @@ public class Frame extends JFrame {
         this.IRBitField.setText(Registers.idx);
         this.MFRBitField.setText(Registers.MFR);
         this.KeyboardTextField.setText("");
+        this.printResultTextField.setText("");
         this.switchValue = "0".repeat(16);
         for (JToggleButton jToggleButton : this.switches) {
             jToggleButton.setSelected(false);
