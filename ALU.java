@@ -8,6 +8,9 @@ public class ALU
     public static int KeyboardInput = 0;
     public static String DescText = "";
 
+    public static String Val_20_int = "";
+    public static String Val_20_int2 = "";
+
     public static void HLT()
     {
         Frame.run = false;
@@ -269,10 +272,10 @@ public class ALU
         int val = 0;
 
         switch (R) {
-            case "00": Registers.update_registers("R0", Registers.get_register_value_int("R0") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
-            case "01": Registers.update_registers("R1", Registers.get_register_value_int("R1") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
-            case "02": Registers.update_registers("R2", Registers.get_register_value_int("R2") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
-            case "03": Registers.update_registers("R3", Registers.get_register_value_int("R3") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
+            case "00": Registers.update_registers("R0", Registers.get_register_value_int("R0") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
+            case "01": Registers.update_registers("R1", Registers.get_register_value_int("R1") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
+            case "02": Registers.update_registers("R2", Registers.get_register_value_int("R2") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
+            case "03": Registers.update_registers("R3", Registers.get_register_value_int("R3") + Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
         }
     }
 
@@ -281,34 +284,78 @@ public class ALU
     public static void SMR(String R, String X, String I, String Address)
     {
         switch (R) {
-            case "00": Registers.update_registers("R0", Registers.get_register_value_int("R0") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
-            case "01": Registers.update_registers("R1", Registers.get_register_value_int("R1") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
-            case "02": Registers.update_registers("R2", Registers.get_register_value_int("R2") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
-            case "03": Registers.update_registers("R3", Registers.get_register_value_int("R3") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
+            case "00": Registers.update_registers("R0", Registers.get_register_value_int("R0") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
+            case "01": Registers.update_registers("R1", Registers.get_register_value_int("R1") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
+            case "02": Registers.update_registers("R2", Registers.get_register_value_int("R2") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
+            case "03": Registers.update_registers("R3", Registers.get_register_value_int("R3") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address))); break;
         }
     }
 
 
     public static void AIR(String R, String Address)
     {
+        int val = 0;
+
+        switch (R)
+        {
+            case "00" : val = Registers.get_register_value_int("R0"); break;
+            case "01" : val = Registers.get_register_value_int("R1"); break;
+            case "10" : val = Registers.get_register_value_int("R2"); break;
+            case "11" : val = Registers.get_register_value_int("R3"); break;
+        }
+
+        System.out.println(val);
+        System.out.println(Integer.parseInt(Address));
+
+        val = val + Integer.parseInt(Address, 2);
+
         switch (R) {
-            case "00": Registers.update_registers("R0", Registers.get_register_value_int("R0") + Integer.parseInt(Address));
-            case "01": Registers.update_registers("R1", Registers.get_register_value_int("R1") + Integer.parseInt(Address));
-            case "02": Registers.update_registers("R2", Registers.get_register_value_int("R2") + Integer.parseInt(Address));
-            case "03": Registers.update_registers("R3", Registers.get_register_value_int("R3") + Integer.parseInt(Address));
+            case "00": Registers.update_registers("R0", val); break;
+            case "01": Registers.update_registers("R1", val); break;
+            case "10": Registers.update_registers("R2", val); break;
+            case "11": Registers.update_registers("R3", val); break;
         }
     }
 
 
     public static void SIR(String R, String Address)
     {
+        int val = 0;
+
+        switch (R)
+        {
+            case "00" : val = Registers.get_register_value_int("R0"); break;
+            case "01" : val = Registers.get_register_value_int("R1"); break;
+            case "10" : val = Registers.get_register_value_int("R2"); break;
+            case "11" : val = Registers.get_register_value_int("R3"); break;
+        }
+
+        System.out.println(val);
+        System.out.println(Integer.parseInt(Address, 2));
+        val = val - Integer.parseInt(Address, 2);
+        System.out.println(val);
+
         switch (R) {
-            case "00": Registers.update_registers("R0", Registers.get_register_value_int("R0") - Integer.parseInt(Address));
-            case "01": Registers.update_registers("R1", Registers.get_register_value_int("R1") - Integer.parseInt(Address));
-            case "02": Registers.update_registers("R2", Registers.get_register_value_int("R2") - Integer.parseInt(Address));
-            case "03": Registers.update_registers("R3", Registers.get_register_value_int("R3") - Integer.parseInt(Address));
+            case "00": Registers.update_registers("R0", val); break;
+            case "01": Registers.update_registers("R1", val); break;
+            case "10": Registers.update_registers("R2", val); break;
+            case "11": Registers.update_registers("R3", val); break;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public static void MLT(String R1, String R2)
@@ -549,29 +596,86 @@ public class ALU
 
     public static void ABS(String R1, String R2)
     {
-        String Rx = "";
-        String Ry = "";
+
+        int xxval = 0;
+        int yyval = 0;
+        int val;
 
         switch(R1)
         {
-            case "00": Rx = "R0"; break;
-            case "01": Rx = "R1"; break;
-            case "10": Rx = "R2"; break;
-            case "11": Rx = "R3"; break;
+            case "00": xxval = Registers.get_register_value_int("R0"); break;
+            case "01": xxval = Registers.get_register_value_int("R1"); break;
+            case "10": xxval = Registers.get_register_value_int("R2"); break;
+            case "11": xxval = Registers.get_register_value_int("R3"); break;
         }
 
         switch(R2)
         {
-            case "00": Ry = "R0"; break;
-            case "01": Ry = "R1"; break;
-            case "10": Ry = "R2"; break;
-            case "11": Ry = "R3"; break;
+            case "00": yyval = Registers.get_register_value_int("R0"); break;
+            case "01": yyval = Registers.get_register_value_int("R1"); break;
+            case "10": yyval = Registers.get_register_value_int("R2"); break;
+            case "11": yyval = Registers.get_register_value_int("R3"); break;
         }
 
-        int val = Math.abs(Registers.get_register_value_int(Rx) - Registers.get_register_value_int(Ry));
 
-        Registers.update_registers(Rx, val);
+
+        if (xxval >= yyval)
+        {
+            val = xxval - yyval;
+        }
+        else
+        {
+            val = yyval-xxval;
+        }
+
+        switch(R1)
+        {
+            case "00": Registers.update_registers("R0", val); break;
+            case "01": Registers.update_registers("R1", val); break;
+            case "10": Registers.update_registers("R2", val); break;
+            case "11": Registers.update_registers("R3", val); break;
+        }
+
+
     }
+
+
+    public static void GMI(String R1, String R2)
+    {
+        int x = 0;
+        int y = 0;
+
+        switch(R1)
+        {
+            case "00": x = Registers.get_register_value_int("R0"); break;
+            case "01": x = Registers.get_register_value_int("R1"); break;
+            case "10": x = Registers.get_register_value_int("R2"); break;
+            case "11": x = Registers.get_register_value_int("R3"); break;
+        }
+
+        switch(R2)
+        {
+            case "00": y = Registers.get_register_value_int("R0"); break;
+            case "01": y = Registers.get_register_value_int("R1"); break;
+            case "10": y = Registers.get_register_value_int("R2"); break;
+            case "11": y = Registers.get_register_value_int("R3"); break;
+        }
+
+
+        int min = 100000;
+        int index = 0;
+        for(int i = x; i <= y; i++)
+        {
+            if (Memory.get_from_memory_int(i) <= min){
+                min = Memory.get_from_memory_int(i);
+                index = i;
+            }
+        }
+
+        Registers.update_registers("R3", index);
+
+    }
+
 
 
 
@@ -696,10 +800,10 @@ public class ALU
             KeyboardInput = Integer.parseInt(Frame.value);
             switch (R)
             {
-                case "00" : Registers.update_registers("R0", KeyboardInput);
-                case "01" : Registers.update_registers("R1", KeyboardInput);
-                case "10" : Registers.update_registers("R2", KeyboardInput);
-                case "11" : Registers.update_registers("R3", KeyboardInput);
+                case "00" : Registers.update_registers("R0", KeyboardInput); break;
+                case "01" : Registers.update_registers("R1", KeyboardInput); break;
+                case "10" : Registers.update_registers("R2", KeyboardInput); break;
+                case "11" : Registers.update_registers("R3", KeyboardInput); break;
             }
         }
     }
