@@ -1,6 +1,6 @@
 public class Utils {
     public static String[] InstructionSet1 = {"LDR", "STR", "LDA", "LDX", "STX", "JZ", "JNE", "JCC", "JMA", "JSR", "RFS", "SOB", "JGE", "AMR", "SMR", "AIR", "SIR"};
-    public static String[] InstructionSet2 = {"MLT", "DVD", "TRR", "AND", "ORR", "NOT", "ABS"};
+    public static String[] InstructionSet2 = {"MLT", "DVD", "TRR", "AND", "ORR", "NOT", "ABS", "GMI"};
     public static String[] InstructionSet3 = {"SRC", "RRC"};
     public static String[] InstructionSet4 = {"IN", "OUT", "CHK"};
 
@@ -348,7 +348,10 @@ public class Utils {
                         operation_bin = "011001";
                         break;
                     case "ABS":
-                        operation_bin = "110010";
+                        operation_bin = "100001";
+                        break;
+                    case "GMI":
+                        operation_bin = "100010";
                         break;
                 }
 
@@ -531,7 +534,8 @@ public class Utils {
             case "111110" : operation_name = "OUT"; break;
             case "111111" : operation_name = "CHK"; break;
 
-            case "110010": operation_name = "ABS"; break;
+            case "100001": operation_name = "ABS"; break;
+            case "100010": operation_name = "GMI"; break;
         }
 
 
@@ -628,8 +632,11 @@ public class Utils {
                     case "011001":
                         ALU.NOT(R1);
                         break;
-                    case "110010":
+                    case "100001":
                         ALU.ABS(R1, R2);
+                        break;
+                    case "100010":
+                        ALU.GMI(R1, R2);
                         break;
                 }
             }
