@@ -2,26 +2,41 @@ import java.lang.Math;
 
 public class Registers {
 
+    // 16 Bit General Purpose Registers 
     static String R0;
     static String R1;
     static String R2;
     static String R3;
 
+    // 16 Bit Instruction Register: holds the instruction to be executed.
     static String idx;
 
+    // 4 Bit Condition Code: set when arithmetic/logical operations are executed.
     static String CC;
 
+    // 16 Bit Memory Buffer Register: holds the word just fetched from or the 
+    // word to be last stored into memory.
     static String MBR;
+
+    // 16 Bit Memory Address Register: holds the address of the word to be fetched from memory
     static String MAR;
+
+    // 4 Bit Machine Fault Register: contains the ID code 0f a machine fault after it occurs.
     static String MFR;
 
+    // 12 Bit Program Counter: holds address of next instruction to be executed.
     static String PC;
 
+    // 16 Bit Index Registers
     static String X1;
     static String X2;
     static String X3;
 
     public static void create_reset_registers(){
+
+        // Initializing all registers
+
+
         R0 = "0000000000000000";
         R1 = "0000000000000000";
         R2 = "0000000000000000";
@@ -45,6 +60,7 @@ public class Registers {
 
     public static void update_registers(String reg_name, int val)
     {
+        // Switch case to update registers as needed.
         switch (reg_name)
         {
             case "R0" : R0 = String.format("%16s", Integer.toBinaryString(val)).replace(' ', '0'); break;
@@ -67,6 +83,7 @@ public class Registers {
     public static String get_register_value_string(String reg_name)
     {
         String result;
+        // Switch case to fetch string values from Registers as needed.
         switch (reg_name) {
             case "R0" : result = R0; break;
             case "R1" :result  =  R1; break;
@@ -89,6 +106,7 @@ public class Registers {
 
     public static int get_register_value_int(String reg_name)
     {
+        // Switch case to fetch integer values from Registers as needed.
         int result_int;
         switch (reg_name) {
             case "R0" : result_int = Integer.parseInt(R0, 2); break;
