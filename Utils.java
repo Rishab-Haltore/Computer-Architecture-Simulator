@@ -735,7 +735,7 @@ public class Utils {
         Registers.update_registers("R0", 10000);
         Registers.update_registers("R1", 0);
 
-        String Instruction_Machine = "DVD R0, R1";
+        String Instruction_Machine = "JMA X0, 14";
 
 
         System.out.println("Instruction Code -------->  " + Utils.generate_opcode(Instruction_Machine + "\n"));
