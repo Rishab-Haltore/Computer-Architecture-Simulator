@@ -1,4 +1,7 @@
 import java.util.Objects;
+
+import javax.swing.JOptionPane;
+
 import java.lang.Math;
 
 public class ALU
@@ -674,6 +677,8 @@ public class ALU
 
         Registers.update_registers("R3", index);
 
+        // System.out.println(index);
+
     }
 
 
@@ -785,7 +790,15 @@ public class ALU
 
 
 
+public static void takeInput(){
 
+
+    String input = "";
+
+    input = JOptionPane.showInputDialog("Please enter the input");
+
+    System.out.println(input);
+}
 
 
 

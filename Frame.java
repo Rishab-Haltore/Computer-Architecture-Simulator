@@ -309,7 +309,7 @@ public class Frame extends JFrame {
             public void keyReleased(KeyEvent ke) {
                 value = KeyboardTextField.getText();
                 int l = value.length();
-                System.out.println(value);
+                // System.out.println(value);
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                     KeyboardTextField.setEditable(true);
                     // KeyboardJLabel.setText("");
