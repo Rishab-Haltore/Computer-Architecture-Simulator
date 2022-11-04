@@ -693,8 +693,10 @@ public class Utils {
 
     public static int calculate_effective_address(String I, String X, String Address) {
         int EA = 0;
+        // calculating the effective address
 
         if (I.equals("0")) {
+            // NO indirect addressing
             switch (X) {
                 case "00":
                     EA = Integer.parseInt(Address, 2);
@@ -710,6 +712,7 @@ public class Utils {
                     break;
             }
         } else if (I.equals("1")) {
+            // indirect addressing, but NO indexing
             switch (X) {
                 case "00":
                     EA = Memory.get_from_memory_int(Integer.parseInt(Address, 2));
