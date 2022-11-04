@@ -24,9 +24,23 @@ public class ALU {
         }
     }
 
+// Load/Store Instructions: 
+
+// Addressing all memory requires indexing!
+// 00   No Indexing  
+// 01   Register 1  
+// 10   Register 2  
+// 11   Register 3 
+
+// Load/Store instructions move data from/to memory and a register.
+
     public static void LDR(String R, String X, String I, String Address) {
 
         int val = Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address));
+        // LDR -> Load Register From Memory
+        //  r = 0..3 
+        // r <- c(EA)
+        // c(EA) means “fetch the contents of the memory location specified by EA”
 
         switch (R) {
             case "00":
@@ -46,6 +60,9 @@ public class ALU {
 
     public static void STR(String R, String X, String I, String Address) {
         int val = 0;
+        // Store Register To Memory
+        // r = 0..3 
+        // Memory(EA) <- c(r)
 
         switch (R) {
             case "00":
@@ -68,7 +85,9 @@ public class ALU {
 
     public static void LDA(String R, String X, String I, String Address) {
         int val = Utils.calculate_effective_address(I, X, Address);
-
+        // Load Register with Address
+        // r = 0..3
+        // r <- EA
         switch (R) {
             case "00":
                 Registers.update_registers("R0", val);
@@ -91,6 +110,9 @@ public class ALU {
 
         int val = Memory.get_from_memory_int(Utils.calculate_effective_address(I, "00", Address));
 
+        // Load Index Register from Memory
+        // x = 1..3
+        // Xx <- c(EA)
         switch (X) {
             case "01":
                 Registers.update_registers("X1", val);
@@ -106,6 +128,9 @@ public class ALU {
 
     public static void STX(String X, String I, String Address) {
         int val = 0;
+        // Store Index Register to Memory
+        // X = 1..3
+        // Memory(EA) <- c(Xx)
 
         switch (X) {
             case "01":
@@ -126,6 +151,9 @@ public class ALU {
 
     public static void JZ(String R, String X, String I, String Address) {
         int val = 0;
+        // Transfer Instructions
+        // Transfer instructions change control of program execution
+        // c(r) means “the contents of register r”, r = 0..3
 
         switch (R) {
             case "00":
@@ -154,6 +182,9 @@ public class ALU {
 
     public static void JNE(String R, String X, String I, String Address) {
         int val = 0;
+        // Jump If Not Equal
+        // If c(r) != 0, then PC <- EA
+        // Else PC <- PC + 1
 
         switch (R) {
             case "00":
@@ -181,7 +212,12 @@ public class ALU {
 
     public static void JCC(String R, String X, String I, String Address) {
         int val = 0;
-
+        // Jump If Condition Code
+        // cc replaces r for this instruction
+        // cc takes values 0, 1, 2, 3 as above and specifies
+        // the bit in the Condition Code Register to check;
+        // If cc bit = 1, PC <- EA
+        // Else PC <- PC + 1
         switch (R) {
             case "00":
                 val = Registers.get_register_value_string("CC").charAt(0);
@@ -208,24 +244,39 @@ public class ALU {
 
 
     public static void JMA(String X, String I, String Address) {
+        // Unconditional Jump To Address
+        // PC <- EA,
+        // Note: r is ignored in this instruction
         Registers.update_registers("PC", Utils.calculate_effective_address(I, X, Address));
     }
 
 
     public static void JSR(String X, String I, String Address) {
+        // Jump and Save Return Address
+        // R3 <- PC+1;
+        // PC <- EA
+        // R0 should contain pointer to arguments
+        // Argument list should end with –1 (all 1s) value
         Registers.update_registers("R3", Registers.get_register_value_int("PC") + 1);
         Registers.update_registers("PC", Utils.calculate_effective_address(I, X, Address));
     }
 
 
     public static void RFS(String Address) {
+        // Return From Subroutine w/ return code as Immed
+        // portion (optional) stored in the instruction’s address field.
+        // R0 <- Immed; PC <- c(R3) 
+        // IX, I fields are ignored.
         Registers.update_registers("R0", Integer.parseInt(Address));
         Registers.update_registers("PC", Registers.get_register_value_int("R3"));
     }
 
     public static void SOB(String R, String X, String I, String Address) {
         int val = 0;
-
+        // Subtract One and Branch. R = 0..3
+        // r <- c(r) – 1
+        // If c(r) > 0, PC <- EA;
+        // Else PC <- PC + 1
         switch (R) {
             case "00":
                 Registers.update_registers("R0", Registers.get_register_value_int("R0") - 1);
@@ -257,6 +308,9 @@ public class ALU {
 
     public static void JGE(String R, String X, String I, String Address) {
         int val = 0;
+        // Jump Greater Than or Equal To
+        // If c(r) >= 0, then PC <- EA
+        // Else PC <- PC + 1
 
         switch (R) {
             case "00":
@@ -282,9 +336,18 @@ public class ALU {
 
     }
 
+// Arithmetic and Logical Instructions
+
+// Arithmetical and Logical instructions perform most of the computational work in the machine.
+// For immediate instructions, the Address portion is considered to be the Immediate value.
+// The maximum absolute value of the Immediate value is 31 (5 bits).
 
     public static void AMR(String R, String X, String I, String Address) {
         int val = 0;
+
+        // AMR -> Add Memory to Register
+        // Add Memory To Register, r = 0..3 
+		// r <- c(r) + c(EA)
 
         switch (R) {
             case "00":
@@ -305,6 +368,9 @@ public class ALU {
 
     public static void SMR(String R, String X, String I, String Address) {
         switch (R) {
+        // Subtract Memory From Register
+        // r = 0..3
+        // r <- c(r) – c(EA)
             case "00":
                 Registers.update_registers("R0", Registers.get_register_value_int("R0") - Memory.get_from_memory_int(Utils.calculate_effective_address(I, X, Address)));
                 break;
@@ -323,6 +389,13 @@ public class ALU {
 
     public static void AIR(String R, String Address) {
         int val = 0;
+
+        // AIR -> Add Immediate to Register, r = 0..3
+        // r <- c(r) + immed
+
+        // 1. if immed = 0, does nothing
+        // 2. if c(r) = 0, loads r with immed
+        // IX and I are ignored in this instruction
 
         switch (R) {
             case "00":
@@ -363,6 +436,12 @@ public class ALU {
 
     public static void SIR(String R, String Address) {
         int val = 0;
+        // Subtract Immediate from Register, r = 0..3
+        // r -> c(r) - Immed
+
+        // 1. if Immed = 0, does nothing
+        // 2. if c(r) = 0, loads r1 with –(Immed)
+        // IX and I are ignored in this instruction
 
         switch (R) {
             case "00":
@@ -402,6 +481,13 @@ public class ALU {
 
 
     public static void MLT(String R1, String R2) {
+
+        // Multiply Register by Register
+        // rx, rx+1 <- c(rx) * c(ry)
+        // rx must be 0 or 2
+        // ry must be 0 or 2
+        // rx contains the high order bits, rx+1 contains the low order bits of the result
+
         if ((Objects.equals(R1, "01")) || (Objects.equals(R1, "11"))) {
             throw new RuntimeException("Use Registers 0 or 2. 1 or 3 must have been used");
         }
@@ -451,6 +537,12 @@ public class ALU {
 
 
     public static void DVD(String R1, String R2) {
+        // Divide Register by Register
+        // rx, rx+1 <- c(rx)/ c(ry)
+        // rx must be 0 or 2
+        // rx contains the quotient; rx+1 contains the remainder
+        // ry must be 0 or 2
+        // If c(ry) = 0, set cc(3) to 1 (set DIVZERO flag)
         if ((Objects.equals(R1, "01")) || (Objects.equals(R1, "11"))) {
             throw new RuntimeException("Use Registers 0 or 2. 1 or 3 must have been used");
         }
@@ -513,7 +605,8 @@ public class ALU {
 
     public static void TRR(String R1, String R2) {
         int rx = 0, ry = 0;
-
+        // Test the Equality of Register and Register
+        // If c(rx) = c(ry), set cc(4) <- 1; else, cc(4) <- 0
 
         switch (R1) {
             case "00":
@@ -560,7 +653,8 @@ public class ALU {
     public static void AND(String R1, String R2) {
         int rx = 0, ry = 0;
         String sol_reg = "R0";
-
+        // AND-> Logical And of Register and Register
+        // c(rx) <- c(rx) AND c(ry)
 
         switch (R1) {
             case "00":
@@ -603,7 +697,8 @@ public class ALU {
     public static void ORR(String R1, String R2) {
         int rx = 0, ry = 0;
         String sol_reg = "R0";
-
+        // Logical Or of Register and Register
+        // c(rx) <- c(rx) OR c(ry)
 
         switch (R1) {
             case "00":
@@ -643,6 +738,8 @@ public class ALU {
     }
 
     public static void NOT(String R1) {
+        // Logical Not of Register To Register
+        // c(rx) <- NOT c(rx)
         switch (R1) {
             case "00":
                 Registers.update_registers("R0", ~Registers.get_register_value_int("R0"));
@@ -661,6 +758,8 @@ public class ALU {
 
 
     public static void ABS(String R1, String R2) {
+
+        // Absolute Value
 
         int xxval = 0;
         int yyval = 0;
@@ -771,9 +870,23 @@ public class ALU {
         // System.out.println(index);
 
     }
+// Shift/Rotate Operations
 
+// Shift and Rotate instructions manipulate a datum in a register.
+
+// Arithmetic Shift (A/L = 0) instructions move a bit string to the right or left, with excess
+// bits discarded (although one or more bits might be preserved in flags). The sign bit is not shifted in this instruction.
+// Logical Shift (A/L = 1) instructions move a bit string left or right, with excess bits 
+// discarded and zero(es) inserted at the opposite end.
+// Logical Rotate (A/L = 1) instructions are similar to shift instructions, except that rotate
+// instructions are circular, with the bits shifted out one end returning on the other end. Rotates can be to the left or right.
 
     public static void SRC(String R, String RL, String AL, String Count) {
+       // Shift Register by Count
+       // c(r) is shifted left (L/R =1) or right (L/R = 0) either
+       // logically (A/L = 1) or arithmetically (A/L = 0)
+       // Count = 0…15
+       // If Count = 0, no shift occurs
         int val = 0;
         String sol_reg = "R0";
 
@@ -837,6 +950,11 @@ public class ALU {
 
 
     public static void RRC(String R, String AL, String RL, String Count) {
+        // Rotate Register by Count
+        // c(r) is rotated left (L/R = 1) or right (L/R =0) either
+        // logically (A/L =1)
+        // Count = 0…15
+        // If Count = 0, no rotate occurs
         int val = 0;
         String sol_reg = "R0";
 
@@ -889,6 +1007,8 @@ public class ALU {
         }
     }
 
+// I/O Operations  
+// They communicate with the peripherals attached to the computer system.
 
     public static void takeInput() {
 
@@ -902,6 +1022,8 @@ public class ALU {
 
 
     public static void IN(String R, String DevId) {
+        // IN r, DevId
+        // Input Character to Device from Register
         String x = "";
 
         for(int i = 500; i< 520; i++)
@@ -934,6 +1056,8 @@ public class ALU {
     }
 
     public static void OUT(String R, String DevId) {
+        // OUT r, DevId
+        // Output Character to Device from Register
         if (Integer.parseInt(DevId) == 1) {
 
             switch (R) {
@@ -951,6 +1075,8 @@ public class ALU {
 
 
     public static void CHK(String R, String DevId) {
+        // Checking  Device Status to Register 
+        // r = 0..3 c(r) <- device status 
 
     }
 
